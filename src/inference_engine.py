@@ -18,8 +18,9 @@ class InferenceEngine:
         return InferenceResult(tokens, throughput)
 
     def integrate_vllm(self, vllm_model):
-        # Simulate integration with vLLM
+        # Integrate vLLM with Metal backend
         self.model = vllm_model
 
-def create_inference_engine(model):
-    return InferenceEngine(model)
+    def get_throughput(self) -> float:
+        # Return the current throughput
+        return self.model.get_throughput()
