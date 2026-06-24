@@ -1,6 +1,5 @@
-# Silicon-Infer
-A project for integrating a model and runtime environment for code assistance.
+# Silicon Infer Onboarding
+This project implements a guided onboarding process for Silicon Infer.
 
 ## Usage
-1. Install the project using `poetry install`
-2. Run the tests using `pytest`
+To run the onboarding process, execute the following command:
