@@ -1,30 +1,27 @@
-from model import Model, CodingTask
+from model import Model, ModelInput, ModelOutput
+from runtime_environment import RuntimeEnvironment
 
-def test_train():
+def test_model_assist():
     model = Model()
-    tasks = [CodingTask(1, "code1", "domain1"), CodingTask(2, "code2", "domain2")]
-    model.train(tasks)
-    assert model.get_tasks() == tasks
+    runtime_environment = RuntimeEnvironment({"config": "test_config"})
+    runtime_environment.integrate_model(model)
+    input = ModelInput("print('Hello World')")
+    output = model.assist(input)
+    assert isinstance(output, ModelOutput)
+    assert len(output.suggestions) > 0
 
-def test_fine_tune():
+def test_model_assist_no_integration():
     model = Model()
-    tasks = [CodingTask(1, "code1", "domain1"), CodingTask(2, "code2", "domain1"), CodingTask(3, "code3", "domain2")]
-    model.train(tasks)
-    model.fine_tune("domain1")
-    assert model.get_tasks() == [tasks[0], tasks[1]]
+    input = ModelInput("print('Hello World')")
+    try:
+        model.assist(input)
+        assert False, "Expected ValueError"
+    except ValueError as e:
+        assert str(e) == "Runtime environment not integrated"
 
-def test_update():
+def test_model_generate_suggestions():
     model = Model()
-    tasks = [CodingTask(1, "code1", "domain1"), CodingTask(2, "code2", "domain2")]
-    model.train(tasks)
-    new_tasks = [CodingTask(3, "code3", "domain1"), CodingTask(4, "code4", "domain2")]
-    model.update(new_tasks)
-    assert model.get_tasks() == tasks + new_tasks
-
-def test_save_and_load():
-    model = Model()
-    tasks = [CodingTask(1, "code1", "domain1"), CodingTask(2, "code2", "domain2")]
-    model.train(tasks)
-    model.save("model.json")
-    loaded_model = Model.load("model.json")
-    assert loaded_model.get_tasks() == tasks
+    code = "print('Hello World')"
+    suggestions = model.generate_suggestions(code)
+    assert len(suggestions) > 0
+    assert "Consider using logging instead of print" in suggestions
